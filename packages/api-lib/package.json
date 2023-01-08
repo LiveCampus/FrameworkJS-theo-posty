@@ -1,0 +1,12 @@
+{
+  "name": "@theo-coder/api-lib",
+  "main": "./src/main.ts",
+  "dependencies": {
+    "inversify": "^6.0.1"
+  },
+  "devDependencies": {
+    "@theo-coder/eslint-config": "workspace:*",
+    "@theo-coder/prettier-config": "workspace:*",
+    "@theo-coder/ts-config": "workspace:*"
+  }
+}
