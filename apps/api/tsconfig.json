@@ -1,0 +1,3 @@
+{
+  "extends": "@theo-coder/ts-config/base.json"
+}

@@ -1,0 +1,7 @@
+{
+  "name": "@theo-coder/prettier-config",
+  "main": "./prettier-config.js",
+  "peerDependencies": {
+    "prettier": "^2.8.2"
+  }
+}

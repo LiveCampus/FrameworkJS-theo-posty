@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "strict": true,
+    "moduleResolution": "node",
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "strictPropertyInitialization": false,
+    "baseUrl": ".",
+    "paths": {
+      "@service/*": ["src/services/*"],
+      "@controller/*": ["src/controllers/*"],
+      "@model/*": ["src/models/*"],
+      "@repository/*": ["src/repositories/*"],
+      "@middleware/*": ["src/middlewares/*"],
+      "@validator/*": ["src/validators/*"]
+    }
+  }
+}
