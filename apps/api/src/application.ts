@@ -2,6 +2,9 @@ import { Application, IApplicationOptions } from '@theo-coder/api-lib'
 import { Container } from 'inversify'
 import { InversifyExpressServer } from 'inversify-express-utils'
 import express from 'express'
+import { UserRepository } from '@repositories/user.repository'
+import { UserService } from '@services/user.service'
+import { DBService } from '@services/database.service'
 
 export class App extends Application {
   constructor() {
@@ -13,10 +16,17 @@ export class App extends Application {
   }
 
   configureServices(container: Container) {
-    //container.bind().toSelf()
+    container.bind(DBService).toSelf()
+
+    container.bind(UserRepository).toSelf()
+    container.bind(UserService).toSelf()
   }
 
   async setup(options: IApplicationOptions) {
+    const _db = this.container.get(DBService)
+
+    await _db.connect()
+
     const server = new InversifyExpressServer(this.container)
 
     server.setConfig((app) => {

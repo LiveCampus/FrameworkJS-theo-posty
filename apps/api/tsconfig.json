@@ -1,3 +1,14 @@
 {
-  "extends": "@theo-coder/ts-config/base.json"
+  "extends": "@theo-coder/ts-config/base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@services/*": ["src/services/*"],
+      "@controllers/*": ["src/controllers/*"],
+      "@repositories/*": ["src/repositories/*"],
+      "@validators/*": ["src/validators/*"],
+      "@middlewares/*": ["src/middlewares/*"],
+      "@models/*": ["src/models/*"]
+    }
+  }
 }
