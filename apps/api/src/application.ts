@@ -27,7 +27,7 @@ export class App extends Application {
 
     await _db.connect()
 
-    const server = new InversifyExpressServer(this.container)
+    const server = new InversifyExpressServer(this.container, null, { rootPath: '/api/v1' })
 
     server.setConfig((app) => {
       app.use(express.json())
