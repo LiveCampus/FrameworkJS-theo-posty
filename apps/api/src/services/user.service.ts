@@ -11,8 +11,16 @@ export class UserService {
     return this._userRepository.getUsers()
   }
 
-  public async getUser(id: string) {
-    return this._userRepository.getUser(id)
+  public async getUserById(id: string) {
+    return this._userRepository.getUserById(id)
+  }
+
+  public async getUserByEmail(email: string) {
+    return this._userRepository.getUserByEmail(email)
+  }
+
+  public async addUser(payload: Partial<IUser>) {
+    return this._userRepository.addUser(payload)
   }
 
   public async updateUser(id: string, payload: Partial<IUser>) {

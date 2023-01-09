@@ -11,15 +11,26 @@ export class UserRepository {
     return this._dbContext.user.find({})
   }
 
-  public async getUser(id: string) {
+  public async getUserById(id: string) {
     return this._dbContext.user
       .findById(id)
       .then((entity) => entity)
       .catch(() => null)
   }
 
+  public async getUserByEmail(email: string) {
+    return this._dbContext.user
+      .findOne({ email })
+      .then((entity) => entity)
+      .catch(() => null)
+  }
+
+  public async addUser(payload: Partial<IUser>) {
+    return this._dbContext.user.create(payload)
+  }
+
   public async updateUser(id: string, payload: Partial<IUser>) {
-    const foundUser = await this.getUser(id)
+    const foundUser = await this.getUserById(id)
 
     if (!foundUser) {
       throw new HttpException('User does not exist', 404)
