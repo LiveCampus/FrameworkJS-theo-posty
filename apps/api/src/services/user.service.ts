@@ -1,4 +1,4 @@
-import { FilterUserDto, UserDto } from '@models/User/user.dto'
+import { FilterUserDto, UpdateUserDto, UserDto } from '@models/User/user.dto'
 import { IUser, Role } from '@models/User/user.model'
 import { UserRepository } from '@repositories/user.repository'
 import { HttpException } from '@theo-coder/api-lib'
@@ -25,9 +25,10 @@ export class UserService {
     return UserDto.from(foundUser)
   }
 
-  public async updateUser(id: string, payload: Partial<IUser>) {
+  public async updateUser(payload: UpdateUserDto) {
+    let password
     if (payload.password) {
-      payload.password = await bcrypt.hash(payload.password, 10)
+      password = await bcrypt.hash(payload.password, 10)
     }
 
     // move this to input dto
@@ -37,7 +38,10 @@ export class UserService {
       }
     }
 
-    await this._userRepository.updateUser(id, payload)
+    await this._userRepository.updateUser(payload.id, {
+      ...payload,
+      password,
+    })
   }
 
   public async deleteUser(id: string) {

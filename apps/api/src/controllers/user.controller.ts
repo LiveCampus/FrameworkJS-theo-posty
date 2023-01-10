@@ -16,7 +16,7 @@ import { AuthMiddleware } from '@middlewares/auth.middleware'
 import { AuthPayload, AuthRequest, HttpException, HttpResponse } from '@theo-coder/api-lib'
 import { Response } from 'express'
 import { ValidateRequest } from '@middlewares/request-validator.middleware'
-import { FilterUserDto } from '@models/User/user.dto'
+import { FilterUserDto, UpdateUserDto } from '@models/User/user.dto'
 
 @controller('/users')
 export class UserController extends BaseHttpController {
@@ -36,7 +36,7 @@ export class UserController extends BaseHttpController {
 
   @httpGet('/:id', ValidateRequest.withParams(FilterUserDto), AuthMiddleware)
   public async getUser(@request() req: AuthRequest<FilterUserDto>, @response() res: Response) {
-    if (req.body.authUser.role !== Role.ADMIN && req.params.id !== req.body.authUser._id) {
+    if (req.body.authUser.role !== Role.ADMIN && req.body.id !== req.body.authUser._id) {
       throw new HttpException('You are not allowed to see this', 403)
     }
 
@@ -47,16 +47,12 @@ export class UserController extends BaseHttpController {
   }
 
   @httpPut('/:id', AuthMiddleware)
-  public async updateUser(
-    @requestParam('id') id: string,
-    @requestBody() payload: AuthPayload<Partial<IUser>>,
-    @response() res: Response,
-  ) {
-    if (payload.authUser.role !== Role.ADMIN && id !== payload.authUser._id) {
+  public async updateUser(@request() req: AuthRequest<UpdateUserDto>, @response() res: Response) {
+    if (req.body.authUser.role !== Role.ADMIN && req.body.id !== req.body.authUser._id) {
       throw new HttpException('You are not allowed to do this', 403)
     }
 
-    await this._userService.updateUser(id, payload)
+    await this._userService.updateUser(req.body)
 
     const response = HttpResponse.success({}, 204)
     res.status(response.statusCode).json(response)
