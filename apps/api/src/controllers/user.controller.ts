@@ -41,7 +41,7 @@ export class UserController extends BaseHttpController {
       throw new HttpException('You are not allowed to see this', 403)
     }
 
-    const user = await this._userService.getUserById(id)
+    const user = await this._userService.getUser(id)
 
     const response = HttpResponse.success(user, 200)
     res.status(response.statusCode).json(response)

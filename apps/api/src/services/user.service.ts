@@ -1,30 +1,43 @@
-import { IUser } from '@models/User/user.model'
+import { UserDto } from '@models/User/user.dto'
+import { IUser, Role } from '@models/User/user.model'
 import { UserRepository } from '@repositories/user.repository'
 import { HttpException } from '@theo-coder/api-lib'
 import { inject, injectable } from 'inversify'
+import bcrypt from 'bcrypt'
 
 @injectable()
 export class UserService {
   constructor(@inject(UserRepository) private _userRepository: UserRepository) {}
 
   public async getUsers() {
-    return this._userRepository.getUsers()
+    const users = await this._userRepository.getUsers()
+
+    return UserDto.fromMany(users)
   }
 
-  public async getUserById(id: string) {
-    return this._userRepository.getUserById(id)
-  }
+  public async getUser(id: string) {
+    const foundUser = await this._userRepository.getUserById(id)
 
-  public async getUserByEmail(email: string) {
-    return this._userRepository.getUserByEmail(email)
-  }
+    if (!foundUser) {
+      throw new HttpException('No user found with the given id', 404)
+    }
 
-  public async addUser(payload: Partial<IUser>) {
-    return this._userRepository.addUser(payload)
+    return UserDto.from(foundUser)
   }
 
   public async updateUser(id: string, payload: Partial<IUser>) {
-    return this._userRepository.updateUser(id, payload)
+    if (payload.password) {
+      payload.password = await bcrypt.hash(payload.password, 10)
+    }
+
+    // move this to input dto
+    if (payload.role) {
+      if (!Object.values(Role).includes(payload.role)) {
+        throw new HttpException("This role doesn't exist", 404)
+      }
+    }
+
+    await this._userRepository.updateUser(id, payload)
   }
 
   public async deleteUser(id: string) {

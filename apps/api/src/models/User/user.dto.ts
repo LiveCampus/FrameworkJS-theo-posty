@@ -10,4 +10,8 @@ export class UserDto {
   static from(entity: IUser) {
     return new UserDto(entity._id, entity.email, entity.role)
   }
+
+  static fromMany(entities: IUser[]) {
+    return entities.map((entity) => UserDto.from(entity))
+  }
 }

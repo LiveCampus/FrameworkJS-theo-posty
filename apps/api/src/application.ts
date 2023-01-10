@@ -5,6 +5,7 @@ import express from 'express'
 import { UserRepository } from '@repositories/user.repository'
 import { UserService } from '@services/user.service'
 import { DBService } from '@services/database.service'
+import { AuthService } from '@services/auth.service'
 
 export class App extends Application {
   constructor() {
@@ -17,6 +18,8 @@ export class App extends Application {
 
   configureServices(container: Container) {
     container.bind(DBService).toSelf()
+
+    container.bind(AuthService).toSelf()
 
     container.bind(UserRepository).toSelf()
     container.bind(UserService).toSelf()
