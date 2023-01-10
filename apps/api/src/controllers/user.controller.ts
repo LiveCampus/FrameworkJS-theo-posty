@@ -6,14 +6,12 @@ import {
   httpGet,
   httpPut,
   request,
-  requestBody,
-  requestParam,
   response,
 } from 'inversify-express-utils'
 import { UserService } from '@services/user.service'
-import { IUser, Role } from '@models/User/user.model'
+import { Role } from '@models/User/user.model'
 import { AuthMiddleware } from '@middlewares/auth.middleware'
-import { AuthPayload, AuthRequest, HttpException, HttpResponse } from '@theo-coder/api-lib'
+import { AuthRequest, HttpException, HttpResponse } from '@theo-coder/api-lib'
 import { Response } from 'express'
 import { ValidateRequest } from '@middlewares/request-validator.middleware'
 import { FilterUserDto, UpdateUserDto } from '@models/User/user.dto'
@@ -46,7 +44,7 @@ export class UserController extends BaseHttpController {
     res.status(response.statusCode).json(response)
   }
 
-  @httpPut('/:id', AuthMiddleware)
+  @httpPut('/:id', ValidateRequest.withParams(UpdateUserDto), AuthMiddleware)
   public async updateUser(@request() req: AuthRequest<UpdateUserDto>, @response() res: Response) {
     if (req.body.authUser.role !== Role.ADMIN && req.body.id !== req.body.authUser._id) {
       throw new HttpException('You are not allowed to do this', 403)
@@ -58,17 +56,13 @@ export class UserController extends BaseHttpController {
     res.status(response.statusCode).json(response)
   }
 
-  @httpDelete('/:id', AuthMiddleware)
-  public async deleteUser(
-    @requestParam('id') id: string,
-    @requestBody() payload: AuthPayload,
-    @response() res: Response,
-  ) {
-    if (payload.authUser.role !== Role.ADMIN && id !== payload.authUser._id) {
+  @httpDelete('/:id', ValidateRequest.withParams(FilterUserDto), AuthMiddleware)
+  public async deleteUser(@request() req: AuthRequest<FilterUserDto>, @response() res: Response) {
+    if (req.body.authUser.role !== Role.ADMIN && req.body.id !== req.body.authUser._id) {
       throw new HttpException('You are not allowed to do this', 403)
     }
 
-    await this._userService.deleteUser(id)
+    await this._userService.deleteUser(req.body)
 
     const response = HttpResponse.success({}, 204)
     res.status(response.statusCode).json(response)

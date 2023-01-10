@@ -1,5 +1,5 @@
 import { FilterUserDto, UpdateUserDto, UserDto } from '@models/User/user.dto'
-import { IUser, Role } from '@models/User/user.model'
+import { Role } from '@models/User/user.model'
 import { UserRepository } from '@repositories/user.repository'
 import { HttpException } from '@theo-coder/api-lib'
 import { inject, injectable } from 'inversify'
@@ -44,8 +44,8 @@ export class UserService {
     })
   }
 
-  public async deleteUser(id: string) {
-    if ((await this._userRepository.deleteUser(id)).deletedCount === 0) {
+  public async deleteUser(payload: FilterUserDto) {
+    if ((await this._userRepository.deleteUser(payload.id)).deletedCount === 0) {
       throw new HttpException('Unable to delete this user', 404)
     }
   }
