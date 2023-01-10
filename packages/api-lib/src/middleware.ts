@@ -23,3 +23,5 @@ export class AuthDto {
 export type AuthPayload<T = Record<string, unknown>> = {
   authUser: AuthDto
 } & T
+
+export type AuthRequest<T = Record<string, unknown>> = Request<any, any, AuthPayload<T>>

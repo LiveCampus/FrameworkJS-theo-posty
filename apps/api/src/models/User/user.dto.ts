@@ -1,3 +1,4 @@
+import { HttpException } from '@theo-coder/api-lib'
 import { IUser, Role } from './user.model'
 
 export class UserDto {
@@ -13,5 +14,17 @@ export class UserDto {
 
   static fromMany(entities: IUser[]) {
     return entities.map((entity) => UserDto.from(entity))
+  }
+}
+
+export class FilterUserDto {
+  constructor(public readonly id: string) {}
+
+  static from(payload: Partial<FilterUserDto>) {
+    if (!payload.id) {
+      throw new HttpException('Missing property id', 419)
+    }
+
+    return new FilterUserDto(payload.id)
   }
 }

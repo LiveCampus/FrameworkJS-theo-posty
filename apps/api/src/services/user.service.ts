@@ -1,4 +1,4 @@
-import { UserDto } from '@models/User/user.dto'
+import { FilterUserDto, UserDto } from '@models/User/user.dto'
 import { IUser, Role } from '@models/User/user.model'
 import { UserRepository } from '@repositories/user.repository'
 import { HttpException } from '@theo-coder/api-lib'
@@ -15,8 +15,8 @@ export class UserService {
     return UserDto.fromMany(users)
   }
 
-  public async getUser(id: string) {
-    const foundUser = await this._userRepository.getUserById(id)
+  public async getUser(payload: FilterUserDto) {
+    const foundUser = await this._userRepository.getUserById(payload.id)
 
     if (!foundUser) {
       throw new HttpException('No user found with the given id', 404)
