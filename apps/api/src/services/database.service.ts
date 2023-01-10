@@ -17,6 +17,7 @@ export class DBService {
     return this._db.model<IUser>('User', userModel)
   }
 
+  // temporary, searching for a better way to do
   public static async user_static() {
     mongoose.set('strictQuery', true)
     const db = await mongoose.connect(process.env.DB_URI)
