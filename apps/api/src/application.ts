@@ -1,4 +1,10 @@
-import { Application, HttpException, HttpResponse, IApplicationOptions } from '@theo-coder/api-lib'
+import {
+  Application,
+  HttpException,
+  HttpResponse,
+  IApplicationOptions,
+  MorganMode,
+} from '@theo-coder/api-lib'
 import { Container } from 'inversify'
 import { InversifyExpressServer } from 'inversify-express-utils'
 import express, { NextFunction, Request, Response } from 'express'
@@ -6,12 +12,16 @@ import { UserRepository } from '@repositories/user.repository'
 import { UserService } from '@services/user.service'
 import { DBService } from '@services/database.service'
 import { AuthService } from '@services/auth.service'
+import morgan from 'morgan'
 
 export class App extends Application {
   constructor() {
     super({
       containerOpts: {
         defaultScope: 'Singleton',
+      },
+      morgan: {
+        mode: MorganMode.DEV,
       },
     })
   }
@@ -34,6 +44,7 @@ export class App extends Application {
 
     server.setConfig((app) => {
       app.use(express.json())
+      app.use(morgan(options.morgan.mode))
     })
 
     server.setErrorConfig((app) => {
