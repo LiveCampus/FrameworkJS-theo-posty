@@ -1,4 +1,4 @@
-import { CreateOrderDto, FilterOrderDto, OrderDto } from '@models/Order/order.dto'
+import { CreateOrderDto, FilterOrderDto, OrderDto, UpdateOrderDto } from '@models/Order/order.dto'
 import { OrderRepository } from '@repositories/order.repository'
 import { HttpException } from '@theo-coder/api-lib'
 import { inject, injectable } from 'inversify'
@@ -27,5 +27,9 @@ export class OrderService {
     const order = await this._orderRepository.addOrder(payload.user)
 
     return OrderDto.from(order)
+  }
+
+  public async updateOrder(payload: UpdateOrderDto) {
+    await this._orderRepository.updateOrder(payload.id, payload)
   }
 }

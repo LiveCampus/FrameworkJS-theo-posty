@@ -1,6 +1,6 @@
 import { AuthMiddleware } from '@middlewares/auth.middleware'
 import { ValidateRequest } from '@middlewares/request-validator.middleware'
-import { FilterOrderDto } from '@models/Order/order.dto'
+import { FilterOrderDto, UpdateOrderDto } from '@models/Order/order.dto'
 import { Role } from '@models/User/user.model'
 import { OrderService } from '@services/order.service'
 import { AuthRequest, HttpException, HttpResponse } from '@theo-coder/api-lib'
@@ -11,6 +11,7 @@ import {
   controller,
   httpGet,
   httpPost,
+  httpPut,
   request,
   response,
 } from 'inversify-express-utils'
@@ -48,6 +49,18 @@ export class OrderController extends BaseHttpController {
     const order = await this._orderService.createOrder({ user: req.body.authUser })
 
     const response = HttpResponse.success(order, 201)
+    res.status(response.statusCode).json(response)
+  }
+
+  @httpPut('/:id', ValidateRequest.withParams(UpdateOrderDto), AuthMiddleware)
+  public async updateOrder(@request() req: AuthRequest<UpdateOrderDto>, @response() res: Response) {
+    if (req.body.authUser.role !== Role.ADMIN) {
+      throw new HttpException('You are not allowed to do this', 403)
+    }
+
+    await this._orderService.updateOrder(req.body)
+
+    const response = HttpResponse.success({}, 204)
     res.status(response.statusCode).json(response)
   }
 }

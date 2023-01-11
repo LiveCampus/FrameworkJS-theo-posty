@@ -1,5 +1,6 @@
 import { IUser } from '@models/User/user.model'
 import { AuthDto, HttpException } from '@theo-coder/api-lib'
+import { validateOrderStatus } from '@validators/order.validator'
 import { IOrder, OrderStatus } from './order.model'
 
 export class OrderDto {
@@ -40,5 +41,21 @@ export class CreateOrderDto {
     }
 
     return new CreateOrderDto(payload.user)
+  }
+}
+
+export class UpdateOrderDto {
+  constructor(public readonly id: string, public readonly status?: OrderStatus) {}
+
+  static from(payload: Partial<UpdateOrderDto>) {
+    if (!payload.id) {
+      throw new HttpException('Missing property id', 419)
+    }
+
+    if (payload.status) {
+      validateOrderStatus(payload.status)
+    }
+
+    return new UpdateOrderDto(payload.id, payload.status)
   }
 }
