@@ -1,7 +1,7 @@
-import { Application, IApplicationOptions } from '@theo-coder/api-lib'
+import { Application, HttpException, HttpResponse, IApplicationOptions } from '@theo-coder/api-lib'
 import { Container } from 'inversify'
 import { InversifyExpressServer } from 'inversify-express-utils'
-import express from 'express'
+import express, { NextFunction, Request, Response } from 'express'
 import { UserRepository } from '@repositories/user.repository'
 import { UserService } from '@services/user.service'
 import { DBService } from '@services/database.service'
@@ -34,6 +34,22 @@ export class App extends Application {
 
     server.setConfig((app) => {
       app.use(express.json())
+    })
+
+    server.setErrorConfig((app) => {
+      app.use((err: Error, _req: Request, res: Response, next: NextFunction) => {
+        if (err instanceof HttpException) {
+          const response = HttpResponse.failed(err.message, err.statusCode)
+          return res.status(response.statusCode).json(response)
+        }
+
+        if (err instanceof Error) {
+          const response = HttpResponse.failed(err.message, 500)
+          return res.status(response.statusCode).json(response)
+        }
+
+        next()
+      })
     })
 
     const app = server.build()
