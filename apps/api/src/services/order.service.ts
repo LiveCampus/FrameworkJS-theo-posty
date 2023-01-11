@@ -32,4 +32,10 @@ export class OrderService {
   public async updateOrder(payload: UpdateOrderDto) {
     await this._orderRepository.updateOrder(payload.id, payload)
   }
+
+  public async deleteOrder(payload: FilterOrderDto) {
+    if ((await this._orderRepository.deleteOrder(payload.id)).deletedCount === 0) {
+      throw new HttpException('Unable to delete this order', 404)
+    }
+  }
 }

@@ -9,6 +9,7 @@ import { inject } from 'inversify'
 import {
   BaseHttpController,
   controller,
+  httpDelete,
   httpGet,
   httpPost,
   httpPut,
@@ -59,6 +60,20 @@ export class OrderController extends BaseHttpController {
     }
 
     await this._orderService.updateOrder(req.body)
+
+    const response = HttpResponse.success({}, 204)
+    res.status(response.statusCode).json(response)
+  }
+
+  @httpDelete('/:id', ValidateRequest.withParams(FilterOrderDto), AuthMiddleware)
+  public async deleteOrder(@request() req: AuthRequest<FilterOrderDto>, @response() res: Response) {
+    const order = await this._orderService.getOrder(req.body)
+
+    if (req.body.authUser.role !== Role.ADMIN && order.user._id !== req.body.authUser._id) {
+      throw new HttpException('You are not allowed to do this', 403)
+    }
+
+    await this._orderService.deleteOrder(req.body)
 
     const response = HttpResponse.success({}, 204)
     res.status(response.statusCode).json(response)

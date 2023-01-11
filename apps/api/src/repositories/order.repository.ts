@@ -35,4 +35,8 @@ export class OrderRepository {
 
     return foundOrder.save()
   }
+
+  public async deleteOrder(id: string) {
+    return this._dbContext.order.deleteOne({ _id: id })
+  }
 }
