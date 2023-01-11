@@ -1,5 +1,5 @@
 import { DBService } from '@services/database.service'
-import { AuthDto, HttpException } from '@theo-coder/api-lib'
+import { AuthDto, HttpException, HttpResponse } from '@theo-coder/api-lib'
 import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 
@@ -7,7 +7,8 @@ export async function AuthMiddleware(req: Request, res: Response, next: NextFunc
   const bearer_token = req.headers.authorization
 
   if (!bearer_token) {
-    throw new HttpException('Not token provided', 403)
+    const response = HttpResponse.failed('No token provided', 403)
+    return res.status(response.statusCode).json(response)
   }
   const token = bearer_token.split(' ')[1]
 
@@ -18,7 +19,8 @@ export async function AuthMiddleware(req: Request, res: Response, next: NextFunc
       email: string
     }
   } catch {
-    throw new HttpException('Authentication token is malformed', 403)
+    const response = HttpResponse.failed('Authentication token is malformed', 403)
+    return res.status(response.statusCode).json(response)
   }
 
   const user = await (
@@ -29,7 +31,8 @@ export async function AuthMiddleware(req: Request, res: Response, next: NextFunc
     .catch(() => null)
 
   if (!user) {
-    throw new HttpException('Authentication token is malformed', 403)
+    const response = HttpResponse.failed('Authentication token is malformed', 403)
+    return res.status(response.statusCode).json(response)
   }
 
   req.body.authUser = AuthDto.from(user)
