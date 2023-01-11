@@ -1,4 +1,6 @@
 import { AuthMiddleware } from '@middlewares/auth.middleware'
+import { ValidateRequest } from '@middlewares/request-validator.middleware'
+import { FilterOrderDto } from '@models/Order/order.dto'
 import { Role } from '@models/User/user.model'
 import { OrderService } from '@services/order.service'
 import { AuthRequest, HttpException, HttpResponse } from '@theo-coder/api-lib'
@@ -19,6 +21,18 @@ export class OrderController extends BaseHttpController {
     const orders = await this._orderService.getOrders()
 
     const response = HttpResponse.success(orders, 200)
+    res.status(response.statusCode).json(response)
+  }
+
+  @httpGet('/:id', ValidateRequest.withParams(FilterOrderDto), AuthMiddleware)
+  public async getOrder(@request() req: AuthRequest<FilterOrderDto>, @response() res: Response) {
+    const order = await this._orderService.getOrder(req.body)
+
+    if (req.body.authUser.role !== Role.ADMIN && order.user._id !== req.body.authUser._id) {
+      throw new HttpException('You are not allowed to see this', 403)
+    }
+
+    const response = HttpResponse.success(order, 200)
     res.status(response.statusCode).json(response)
   }
 }

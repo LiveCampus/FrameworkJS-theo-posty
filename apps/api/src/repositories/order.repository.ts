@@ -8,4 +8,11 @@ export class OrderRepository {
   public async getOrders() {
     return this._dbContext.order.find({})
   }
+
+  public async getOrderById(id: string) {
+    return this._dbContext.order
+      .findById(id)
+      .then((entity) => entity)
+      .catch(() => null)
+  }
 }
