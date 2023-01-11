@@ -6,7 +6,14 @@ import { OrderService } from '@services/order.service'
 import { AuthRequest, HttpException, HttpResponse } from '@theo-coder/api-lib'
 import { Response } from 'express'
 import { inject } from 'inversify'
-import { BaseHttpController, controller, httpGet, request, response } from 'inversify-express-utils'
+import {
+  BaseHttpController,
+  controller,
+  httpGet,
+  httpPost,
+  request,
+  response,
+} from 'inversify-express-utils'
 
 @controller('/orders')
 export class OrderController extends BaseHttpController {
@@ -33,6 +40,14 @@ export class OrderController extends BaseHttpController {
     }
 
     const response = HttpResponse.success(order, 200)
+    res.status(response.statusCode).json(response)
+  }
+
+  @httpPost('/', AuthMiddleware)
+  public async createOrder(@request() req: AuthRequest, @response() res: Response) {
+    const order = await this._orderService.createOrder({ user: req.body.authUser })
+
+    const response = HttpResponse.success(order, 201)
     res.status(response.statusCode).json(response)
   }
 }

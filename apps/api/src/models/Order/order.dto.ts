@@ -1,5 +1,5 @@
 import { IUser } from '@models/User/user.model'
-import { HttpException } from '@theo-coder/api-lib'
+import { AuthDto, HttpException } from '@theo-coder/api-lib'
 import { IOrder, OrderStatus } from './order.model'
 
 export class OrderDto {
@@ -28,5 +28,17 @@ export class FilterOrderDto {
     }
 
     return new FilterOrderDto(payload.id)
+  }
+}
+
+export class CreateOrderDto {
+  constructor(public readonly user: AuthDto) {}
+
+  static from(payload: Partial<CreateOrderDto>) {
+    if (!payload.user) {
+      throw new HttpException('Missing property user', 419)
+    }
+
+    return new CreateOrderDto(payload.user)
   }
 }

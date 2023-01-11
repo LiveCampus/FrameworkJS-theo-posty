@@ -1,3 +1,4 @@
+import { IOrder } from '@models/Order/order.model'
 import { DBService } from '@services/database.service'
 import { injectable } from 'inversify'
 
@@ -14,5 +15,9 @@ export class OrderRepository {
       .findById(id)
       .then((entity) => entity)
       .catch(() => null)
+  }
+
+  public async addOrder(payload: Partial<IOrder>) {
+    return this._dbContext.order.create({ user: payload })
   }
 }
