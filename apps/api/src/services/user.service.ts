@@ -1,5 +1,4 @@
 import { FilterUserDto, UpdateUserDto, UserDto } from '@models/User/user.dto'
-import { Role } from '@models/User/user.model'
 import { UserRepository } from '@repositories/user.repository'
 import { HttpException } from '@theo-coder/api-lib'
 import { inject, injectable } from 'inversify'
