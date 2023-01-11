@@ -1,3 +1,4 @@
+import { IOrder } from '@models/Order/order.model'
 import mongoose from 'mongoose'
 
 export enum Role {
@@ -10,6 +11,7 @@ export interface IUser {
   email: string
   password: string
   role: Role
+  orders: IOrder[]
 }
 
 export const userModel = new mongoose.Schema({
@@ -27,6 +29,12 @@ export const userModel = new mongoose.Schema({
     required: true,
     default: Role.USER,
   },
+  orders: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Order',
+    },
+  ],
 })
 
 export type User = typeof userModel

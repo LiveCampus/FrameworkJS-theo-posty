@@ -1,0 +1,37 @@
+import { IUser } from '@models/User/user.model'
+import mongoose from 'mongoose'
+
+export enum OrderStatus {
+  IDLE = 'idle',
+  VALID = 'valid',
+  PAID = 'paid',
+  DELIVERED = 'delivered',
+  CANCELED = 'canceled',
+}
+
+export interface IOrder {
+  _id: string
+  date: Date
+  status: OrderStatus
+  user: IUser
+}
+
+export const orderModel = new mongoose.Schema({
+  date: {
+    type: Date,
+    required: true,
+    default: Date.now,
+  },
+  status: {
+    type: String,
+    enum: OrderStatus,
+    required: true,
+    default: OrderStatus.IDLE,
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
+})
+
+export type Order = typeof orderModel
