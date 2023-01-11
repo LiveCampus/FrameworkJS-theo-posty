@@ -27,15 +27,9 @@ export class UserService {
 
   public async updateUser(payload: UpdateUserDto) {
     let password
+
     if (payload.password) {
       password = await bcrypt.hash(payload.password, 10)
-    }
-
-    // move this to input dto
-    if (payload.role) {
-      if (!Object.values(Role).includes(payload.role)) {
-        throw new HttpException("This role doesn't exist", 404)
-      }
     }
 
     await this._userRepository.updateUser(payload.id, {

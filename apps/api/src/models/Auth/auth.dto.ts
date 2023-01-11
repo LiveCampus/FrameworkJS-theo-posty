@@ -1,5 +1,7 @@
 import { IUser, Role } from '@models/User/user.model'
 import { HttpException } from '@theo-coder/api-lib'
+import { validateEmail } from '@validators/email.validator'
+import { validatePassword } from '@validators/password.validator'
 
 export class AuthenticationDto {
   constructor(public readonly email: string, public readonly password: string) {}
@@ -13,8 +15,8 @@ export class AuthenticationDto {
       throw new HttpException('Missing property password', 419)
     }
 
-    // validate email
-    // validate password
+    validateEmail(body.email)
+    validatePassword(body.password)
 
     return new AuthenticationDto(body.email, body.password)
   }

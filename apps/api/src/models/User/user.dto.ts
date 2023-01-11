@@ -1,4 +1,7 @@
 import { HttpException } from '@theo-coder/api-lib'
+import { validateEmail } from '@validators/email.validator'
+import { validatePassword } from '@validators/password.validator'
+import { validateRole } from '@validators/role.validator'
 import { IUser, Role } from './user.model'
 
 export class UserDto {
@@ -42,8 +45,17 @@ export class UpdateUserDto {
       throw new HttpException('Missing property id', 419)
     }
 
-    // validate Email
-    // validate password
+    if (payload.email) {
+      validateEmail(payload.email)
+    }
+
+    if (payload.password) {
+      validatePassword(payload.password)
+    }
+
+    if (payload.role) {
+      validateRole(payload.role)
+    }
 
     return new UpdateUserDto(payload.id, payload.email, payload.password, payload.role)
   }
