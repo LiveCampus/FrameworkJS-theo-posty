@@ -13,6 +13,8 @@ import { UserService } from '@services/user.service'
 import { DBService } from '@services/database.service'
 import { AuthService } from '@services/auth.service'
 import morgan from 'morgan'
+import { OrderRepository } from '@repositories/order.repository'
+import { OrderService } from '@services/order.service'
 
 export class App extends Application {
   constructor() {
@@ -33,6 +35,9 @@ export class App extends Application {
 
     container.bind(UserRepository).toSelf()
     container.bind(UserService).toSelf()
+
+    container.bind(OrderRepository).toSelf()
+    container.bind(OrderService).toSelf()
   }
 
   async setup(options: IApplicationOptions) {

@@ -1,3 +1,4 @@
+import { IOrder, orderModel } from '@models/Order/order.model'
 import { IUser, userModel } from '@models/User/user.model'
 import { injectable } from 'inversify'
 import mongoose from 'mongoose'
@@ -15,6 +16,10 @@ export class DBService {
 
   get user() {
     return this._db.model<IUser>('User', userModel)
+  }
+
+  get order() {
+    return this._db.model<IOrder>('Order', orderModel)
   }
 
   // temporary, searching for a better way to do
