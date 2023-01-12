@@ -15,9 +15,9 @@
   "components": {
     "securitySchemes": {
       "bearerAuth": {
-        "type": "apiKey",
-        "name": "Authorization",
-        "in": "header"
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     },
     "schemas": {
@@ -63,11 +63,6 @@
       }
     }
   },
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ],
   "tags": [],
   "paths": {
     "/products": {
@@ -108,6 +103,11 @@
         }
       },
       "post": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "tags": ["PRODUCT"],
         "summary": "Creates a new product. Duplicates are not allowed",
         "description": "Creates a new product. Duplicates are not allowed",
@@ -250,6 +250,11 @@
         }
       },
       "put": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "tags": ["PRODUCT"],
         "summary": "Updates a selected product based on ID. Duplicates are not allowed",
         "description": "Updates a selected product based on ID. Duplicates are not allowed",
@@ -309,6 +314,11 @@
         }
       },
       "delete": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "tags": ["PRODUCT"],
         "summary": "Delete a selected product based on ID",
         "description": "Delete a selected product based on ID",
