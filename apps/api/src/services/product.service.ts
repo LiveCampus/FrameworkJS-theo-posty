@@ -1,4 +1,9 @@
-import { CreateProductDto, FilterProductDto, ProductDto } from '@models/Product/product.dto'
+import {
+  CreateProductDto,
+  FilterProductDto,
+  ProductDto,
+  UpdateProductDto,
+} from '@models/Product/product.dto'
 import { ProductRepository } from '@repositories/product.repository'
 import { HttpException } from '@theo-coder/api-lib'
 import { inject, injectable } from 'inversify'
@@ -33,5 +38,9 @@ export class ProductService {
     const product = await this._productRepository.addProduct(payload)
 
     return ProductDto.from(product)
+  }
+
+  public async updateProduct(payload: UpdateProductDto) {
+    await this._productRepository.updateProduct(payload.id, payload)
   }
 }

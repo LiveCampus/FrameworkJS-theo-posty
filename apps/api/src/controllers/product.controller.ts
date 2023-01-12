@@ -1,6 +1,6 @@
 import { AuthMiddleware } from '@middlewares/auth.middleware'
 import { ValidateRequest } from '@middlewares/request-validator.middleware'
-import { CreateProductDto, FilterProductDto } from '@models/Product/product.dto'
+import { CreateProductDto, FilterProductDto, UpdateProductDto } from '@models/Product/product.dto'
 import { Role } from '@models/User/user.model'
 import { ProductService } from '@services/product.service'
 import { AuthRequest, HttpException, HttpResponse } from '@theo-coder/api-lib'
@@ -11,6 +11,7 @@ import {
   controller,
   httpGet,
   httpPost,
+  httpPut,
   request,
   response,
 } from 'inversify-express-utils'
@@ -47,6 +48,21 @@ export class ProductController extends BaseHttpController {
     const product = await this._productService.createProduct(req.body)
 
     const response = HttpResponse.success(product, 201)
+    res.status(response.statusCode).json(response)
+  }
+
+  @httpPut('/:id', ValidateRequest.withParams(UpdateProductDto), AuthMiddleware)
+  public async updateProduct(
+    @request() req: AuthRequest<UpdateProductDto>,
+    @response() res: Response,
+  ) {
+    if (req.body.authUser.role !== Role.ADMIN) {
+      throw new HttpException('You are not allowed to do this', 403)
+    }
+
+    await this._productService.updateProduct(req.body)
+
+    const response = HttpResponse.success({}, 204)
     res.status(response.statusCode).json(response)
   }
 }

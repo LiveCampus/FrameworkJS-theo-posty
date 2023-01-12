@@ -51,3 +51,27 @@ export class CreateProductDto {
     return new CreateProductDto(payload.name, payload.price, payload.description, payload.image)
   }
 }
+
+export class UpdateProductDto {
+  constructor(
+    public readonly id: string,
+    public readonly name?: string,
+    public readonly price?: number,
+    public readonly description?: string,
+    public readonly image?: string,
+  ) {}
+
+  static from(payload: Partial<UpdateProductDto>) {
+    if (!payload.id) {
+      throw new HttpException('Missing property id', 419)
+    }
+
+    return new UpdateProductDto(
+      payload.id,
+      payload.name,
+      payload.price,
+      payload.description,
+      payload.image,
+    )
+  }
+}
