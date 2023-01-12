@@ -1,5 +1,5 @@
 {
-  "extends": "@theo-coder/ts-config/base.json",
+  "extends": "@theo-coder/ts-config/api.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {

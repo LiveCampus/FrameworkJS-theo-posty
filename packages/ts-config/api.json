@@ -12,15 +12,6 @@
     "emitDecoratorMetadata": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "strictPropertyInitialization": false,
-    "baseUrl": ".",
-    "paths": {
-      "@service/*": ["src/services/*"],
-      "@controller/*": ["src/controllers/*"],
-      "@model/*": ["src/models/*"],
-      "@repository/*": ["src/repositories/*"],
-      "@middleware/*": ["src/middlewares/*"],
-      "@validator/*": ["src/validators/*"]
-    }
+    "strictPropertyInitialization": false
   }
 }
