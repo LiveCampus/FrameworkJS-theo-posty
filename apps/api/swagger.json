@@ -307,6 +307,54 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": ["PRODUCT"],
+        "summary": "Delete a selected product based on ID",
+        "description": "Delete a selected product based on ID",
+        "operationId": "deleteProduct",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the product to delete",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "successful operation"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "nullable": true,
+                      "default": null
+                    },
+                    "error": {
+                      "type": "string",
+                      "default": "error message"
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "format": "int8",
+                      "default": 400
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
