@@ -1,3 +1,4 @@
+import { IProduct } from '@models/Product/product.model'
 import { DBService } from '@services/database.service'
 import { injectable } from 'inversify'
 
@@ -14,5 +15,16 @@ export class ProductRepository {
       .findById(id)
       .then((entity) => entity)
       .catch(() => null)
+  }
+
+  public async getProductByName(name: string) {
+    return this._dbContext.product
+      .findOne({ name })
+      .then((entity) => entity)
+      .catch(() => null)
+  }
+
+  public async addProduct(payload: Partial<IProduct>) {
+    return this._dbContext.product.create(payload)
   }
 }

@@ -30,3 +30,24 @@ export class FilterProductDto {
     return new FilterProductDto(payload.id)
   }
 }
+
+export class CreateProductDto {
+  constructor(
+    public readonly name: string,
+    public readonly price: number,
+    public readonly description?: string,
+    public readonly image?: string,
+  ) {}
+
+  static from(payload: Partial<CreateProductDto>) {
+    if (!payload.name) {
+      throw new HttpException('Missing property name', 419)
+    }
+
+    if (!payload.price) {
+      throw new HttpException('Missing property price', 419)
+    }
+
+    return new CreateProductDto(payload.name, payload.price, payload.description, payload.image)
+  }
+}

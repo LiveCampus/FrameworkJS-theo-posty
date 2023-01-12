@@ -1,4 +1,4 @@
-import { FilterProductDto, ProductDto } from '@models/Product/product.dto'
+import { CreateProductDto, FilterProductDto, ProductDto } from '@models/Product/product.dto'
 import { ProductRepository } from '@repositories/product.repository'
 import { HttpException } from '@theo-coder/api-lib'
 import { inject, injectable } from 'inversify'
@@ -21,5 +21,17 @@ export class ProductService {
     }
 
     return ProductDto.from(foundProduct)
+  }
+
+  public async createProduct(payload: CreateProductDto) {
+    const existingProduct = await this._productRepository.getProductByName(payload.name)
+
+    if (existingProduct) {
+      throw new HttpException('A product with the same name already exists', 409)
+    }
+
+    const product = await this._productRepository.addProduct(payload)
+
+    return ProductDto.from(product)
   }
 }
