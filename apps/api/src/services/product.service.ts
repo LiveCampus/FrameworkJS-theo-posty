@@ -43,4 +43,10 @@ export class ProductService {
   public async updateProduct(payload: UpdateProductDto) {
     await this._productRepository.updateProduct(payload.id, payload)
   }
+
+  public async deleteProduct(payload: FilterProductDto) {
+    if ((await this._productRepository.deleteProduct(payload.id)).deletedCount === 0) {
+      throw new HttpException('Unable to delete this product', 404)
+    }
+  }
 }

@@ -54,4 +54,8 @@ export class ProductRepository {
 
     return foundProduct.save()
   }
+
+  public async deleteProduct(id: string) {
+    return this._dbContext.product.deleteOne({ _id: id })
+  }
 }
