@@ -18,6 +18,10 @@ export class OrderRepository {
       .catch(() => null)
   }
 
+  public async getFullOrderById(id: string) {
+    return this._dbContext.order.findById(id).populate('products')
+  }
+
   public async addOrder(payload: Partial<IOrder>) {
     return this._dbContext.order.create({ user: payload })
   }
@@ -31,6 +35,10 @@ export class OrderRepository {
 
     if (payload.status) {
       foundOrder.status = payload.status
+    }
+
+    if (payload.products) {
+      foundOrder.products = payload.products
     }
 
     return foundOrder.save()

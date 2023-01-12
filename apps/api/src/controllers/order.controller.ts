@@ -1,6 +1,6 @@
 import { AuthMiddleware } from '@middlewares/auth.middleware'
 import { ValidateRequest } from '@middlewares/request-validator.middleware'
-import { FilterOrderDto, UpdateOrderDto } from '@models/Order/order.dto'
+import { FilterOrderDto, UpdateOrderDto, UpdateProductsInOrderDto } from '@models/Order/order.dto'
 import { Role } from '@models/User/user.model'
 import { OrderService } from '@services/order.service'
 import { AuthRequest, HttpException, HttpResponse } from '@theo-coder/api-lib'
@@ -77,5 +77,33 @@ export class OrderController extends BaseHttpController {
 
     const response = HttpResponse.success({}, 204)
     res.status(response.statusCode).json(response)
+  }
+
+  @httpPut('/:orderId/add', ValidateRequest.withParams(UpdateProductsInOrderDto), AuthMiddleware)
+  public async addProduct(
+    @request() req: AuthRequest<UpdateProductsInOrderDto>,
+    @response() res: Response,
+  ) {
+    const order = await this._orderService.getOrder({ id: req.body.orderId })
+
+    if (req.body.authUser.role !== Role.ADMIN && order.user._id !== req.body.authUser._id) {
+      throw new HttpException('You are not allowed to do this', 403)
+    }
+
+    await this._orderService.addProduct(req.body, order)
+  }
+
+  @httpPut('/:orderId/remove', ValidateRequest.withParams(UpdateProductsInOrderDto), AuthMiddleware)
+  public async removeProduct(
+    @request() req: AuthRequest<UpdateProductsInOrderDto>,
+    @response() res: Response,
+  ) {
+    const order = await this._orderService.getOrder({ id: req.body.orderId })
+
+    if (req.body.authUser.role !== Role.ADMIN && order.user._id !== req.body.authUser._id) {
+      throw new HttpException('You are not allowed to do this', 403)
+    }
+
+    await this._orderService.removeProduct(req.body, order)
   }
 }

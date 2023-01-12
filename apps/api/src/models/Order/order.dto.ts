@@ -1,3 +1,4 @@
+import { IProduct } from '@models/Product/product.model'
 import { IUser } from '@models/User/user.model'
 import { AuthDto, HttpException } from '@theo-coder/api-lib'
 import { validateOrderStatus } from '@validators/order.validator'
@@ -9,10 +10,11 @@ export class OrderDto {
     public readonly date: Date,
     public readonly status: OrderStatus,
     public readonly user: IUser,
+    public readonly products: IProduct[],
   ) {}
 
   static from(entity: IOrder) {
-    return new OrderDto(entity._id, entity.date, entity.status, entity.user)
+    return new OrderDto(entity._id, entity.date, entity.status, entity.user, entity.products)
   }
 
   static fromMany(entities: IOrder[]) {
@@ -57,5 +59,25 @@ export class UpdateOrderDto {
     }
 
     return new UpdateOrderDto(payload.id, payload.status)
+  }
+}
+
+export class UpdateProductsInOrderDto {
+  constructor(
+    public readonly orderId: string,
+    public readonly productId: string,
+    public readonly quantity: number,
+  ) {}
+
+  static from(payload: Partial<UpdateProductsInOrderDto>) {
+    if (!payload.orderId) {
+      throw new HttpException('Missing property orderId', 419)
+    }
+
+    if (!payload.productId) {
+      throw new HttpException('Missing property productId', 419)
+    }
+
+    return new UpdateProductsInOrderDto(payload.orderId, payload.productId, payload.quantity || 1)
   }
 }
