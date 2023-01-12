@@ -60,6 +60,75 @@
             "default": "product image"
           }
         }
+      },
+      "User": {
+        "type": "object",
+        "required": ["id", "email", "role"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "default": "userID"
+          },
+          "email": {
+            "type": "string",
+            "default": "example@email.fr"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["admin", "user"],
+            "default": "user"
+          }
+        }
+      },
+      "NewUser": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "default": "example@email.fr"
+          },
+          "password": {
+            "type": "string",
+            "default": "Azerty1!"
+          }
+        }
+      },
+      "UpdateUser": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "default": "example@email.fr"
+          },
+          "password": {
+            "type": "string",
+            "default": "Azerty1!"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["admin", "user"],
+            "default": "user"
+          }
+        }
+      },
+      "AuthUser": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "default": "example@email.fr"
+          },
+          "role": {
+            "type": "string",
+            "enum": ["admin", "user"],
+            "default": "user"
+          },
+          "token": {
+            "type": "string",
+            "default": "some_token_string"
+          }
+        }
       }
     }
   },
@@ -336,6 +405,418 @@
         "responses": {
           "204": {
             "description": "successful operation"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "nullable": true,
+                      "default": null
+                    },
+                    "error": {
+                      "type": "string",
+                      "default": "error message"
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "format": "int8",
+                      "default": 400
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["USER"],
+        "summary": "Get all the users",
+        "description": "Get all the users",
+        "operationId": "getUsers",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    },
+                    "error": {
+                      "type": "string",
+                      "nullable": true,
+                      "default": null
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "format": "int8",
+                      "default": 200
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "nullable": true,
+                      "default": null
+                    },
+                    "error": {
+                      "type": "string",
+                      "default": "error message"
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "format": "int8",
+                      "default": 400
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["USER"],
+        "summary": "Get one user based on a single ID",
+        "description": "Get one user based on a single ID",
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the user to fetch",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    },
+                    "error": {
+                      "type": "string",
+                      "nullable": true,
+                      "default": null
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "format": "int8",
+                      "default": 200
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "nullable": true,
+                      "default": null
+                    },
+                    "error": {
+                      "type": "string",
+                      "default": "error message"
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "format": "int8",
+                      "default": 400
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["USER"],
+        "summary": "Updates a selected user based on ID. Duplicates are not allowed",
+        "description": "Updates a selected user based on ID. Duplicates are not allowed",
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the user to update",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "User to update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "successful operation"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "nullable": true,
+                      "default": null
+                    },
+                    "error": {
+                      "type": "string",
+                      "default": "error message"
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "format": "int8",
+                      "default": 400
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["USER"],
+        "summary": "Delete a selected user based on ID",
+        "description": "Delete a selected user based on ID",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the user to delete",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "successful operation"
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "nullable": true,
+                      "default": null
+                    },
+                    "error": {
+                      "type": "string",
+                      "default": "error message"
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "format": "int8",
+                      "default": 400
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": ["AUTH"],
+        "summary": "Register a new user. Duplicates are not allowed",
+        "description": "Register a new user. Duplicates are not allowed",
+        "operationId": "registerUser",
+        "requestBody": {
+          "description": "User to add",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AuthUser"
+                    },
+                    "error": {
+                      "type": "string",
+                      "nullable": true,
+                      "default": null
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "format": "int8",
+                      "default": 201
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "nullable": true,
+                      "default": null
+                    },
+                    "error": {
+                      "type": "string",
+                      "default": "error message"
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "format": "int8",
+                      "default": 400
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["AUTH"],
+        "summary": "Login as a user",
+        "description": "Login as a user",
+        "operationId": "loginUser",
+        "requestBody": {
+          "description": "User to login into",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AuthUser"
+                    },
+                    "error": {
+                      "type": "string",
+                      "nullable": true,
+                      "default": null
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "format": "int8",
+                      "default": 201
+                    }
+                  }
+                }
+              }
+            }
           },
           "default": {
             "description": "unexpected error",
