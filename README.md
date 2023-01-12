@@ -8,6 +8,7 @@
 
 # TODOS
 
+- dto for product in order
 - front
 - storybook
 - kubernetes
