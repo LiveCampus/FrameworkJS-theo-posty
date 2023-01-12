@@ -24,16 +24,17 @@
       "Product": {
         "allOf": [
           {
-            "$ref": "#/components/schemas/NewProduct"
-          },
-          {
             "type": "object",
             "required": ["id"],
             "properties": {
               "id": {
-                "type": "string"
+                "type": "string",
+                "default": "productID"
               }
             }
+          },
+          {
+            "$ref": "#/components/schemas/NewProduct"
           }
         ]
       },
@@ -42,17 +43,21 @@
         "required": ["name", "price"],
         "properties": {
           "name": {
-            "type": "string"
+            "type": "string",
+            "default": "product name"
           },
           "price": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "default": 10
           },
           "description": {
-            "type": "string"
+            "type": "string",
+            "default": "product description"
           },
           "image": {
-            "type": "string"
+            "type": "string",
+            "default": "product image"
           }
         }
       }
@@ -77,9 +82,94 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Product"
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Product"
+                      }
+                    },
+                    "error": {
+                      "type": "string",
+                      "nullable": true,
+                      "default": null
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "format": "int8",
+                      "default": 200
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["PRODUCT"],
+        "summary": "Creates a new product. Duplicates are not allowed",
+        "description": "Creates a new product. Duplicates are not allowed",
+        "operationId": "addProduct",
+        "requestBody": {
+          "description": "Product to add",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewProduct"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Product"
+                    },
+                    "error": {
+                      "type": "string",
+                      "nullable": true,
+                      "default": null
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "format": "int8",
+                      "default": 201
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "nullable": true,
+                      "default": null
+                    },
+                    "error": {
+                      "type": "string",
+                      "default": "error message"
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "format": "int8",
+                      "default": 400
+                    }
                   }
                 }
               }
