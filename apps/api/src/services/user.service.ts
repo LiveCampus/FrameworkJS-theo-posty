@@ -25,6 +25,14 @@ export class UserService {
   }
 
   public async updateUser(payload: UpdateUserDto) {
+    if (payload.email) {
+      const existingUser = await this._userRepository.getUserByEmail(payload.email)
+
+      if (existingUser) {
+        throw new HttpException('Username already exists', 409)
+      }
+    }
+
     let password
 
     if (payload.password) {
