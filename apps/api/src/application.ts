@@ -17,6 +17,8 @@ import { OrderRepository } from '@repositories/order.repository'
 import { OrderService } from '@services/order.service'
 import { ProductRepository } from '@repositories/product.repository'
 import { ProductService } from '@services/product.service'
+import swaggerUi from 'swagger-ui-express'
+import swaggerDocument from '../swagger.json'
 
 export class App extends Application {
   constructor() {
@@ -53,6 +55,7 @@ export class App extends Application {
     const server = new InversifyExpressServer(this.container, null, { rootPath: '/api/v1' })
 
     server.setConfig((app) => {
+      app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
       app.use(express.json())
       app.use(morgan(options.morgan.mode))
     })

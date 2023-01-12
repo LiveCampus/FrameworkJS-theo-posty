@@ -1,0 +1,92 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Livecampus FrameworkJS",
+    "description": "A simple api to request data for an ecommerce website",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Theo Posty",
+      "email": "thso@posty.fr",
+      "url": "https://theo.posty.fr"
+    }
+  },
+  "produces": ["application/json"],
+  "servers": [{ "url": "http://localhost:8000/api/v1/" }],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
+    },
+    "schemas": {
+      "Product": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewProduct"
+          },
+          {
+            "type": "object",
+            "required": ["id"],
+            "properties": {
+              "id": {
+                "type": "string"
+              }
+            }
+          }
+        ]
+      },
+      "NewProduct": {
+        "type": "object",
+        "required": ["name", "price"],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "description": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "tags": [],
+  "paths": {
+    "/products": {
+      "get": {
+        "tags": ["PRODUCT"],
+        "summary": "Get all the products",
+        "description": "Get all the products",
+        "operationId": "getProducts",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Product"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
