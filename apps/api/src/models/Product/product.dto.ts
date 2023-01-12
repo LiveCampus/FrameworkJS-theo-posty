@@ -1,3 +1,4 @@
+import { HttpException } from '@theo-coder/api-lib'
 import { IProduct } from './product.model'
 
 export class ProductDto {
@@ -15,5 +16,17 @@ export class ProductDto {
 
   static fromMany(entities: IProduct[]) {
     return entities.map((entity) => ProductDto.from(entity))
+  }
+}
+
+export class FilterProductDto {
+  constructor(public readonly id: string) {}
+
+  static from(payload: Partial<FilterProductDto>) {
+    if (!payload.id) {
+      throw new HttpException('Missing property id', 419)
+    }
+
+    return new FilterProductDto(payload.id)
   }
 }

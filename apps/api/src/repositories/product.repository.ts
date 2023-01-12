@@ -8,4 +8,11 @@ export class ProductRepository {
   public async getProducts() {
     return this._dbContext.product.find({})
   }
+
+  public async getProductById(id: string) {
+    return this._dbContext.product
+      .findById(id)
+      .then((entity) => entity)
+      .catch(() => null)
+  }
 }
