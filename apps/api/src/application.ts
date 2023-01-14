@@ -19,6 +19,7 @@ import { ProductRepository } from '@repositories/product.repository'
 import { ProductService } from '@services/product.service'
 import swaggerUi from 'swagger-ui-express'
 import swaggerDocument from '../swagger.json'
+import cors from 'cors'
 
 export class App extends Application {
   constructor() {
@@ -57,6 +58,7 @@ export class App extends Application {
     server.setConfig((app) => {
       app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
       app.use(express.json())
+      app.use(cors())
       app.use(morgan(options.morgan.mode))
     })
 
