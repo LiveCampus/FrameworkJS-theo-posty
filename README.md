@@ -8,6 +8,7 @@
 
 # TODOS
 
+- response error specify error field
 - dto for product in order
 - front
 - storybook
