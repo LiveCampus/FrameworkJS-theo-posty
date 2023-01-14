@@ -7,6 +7,9 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { ServerResponse } from '../types/types'
+import { useAuth } from '../context/AuthContext'
+import clsx from 'clsx'
+import Router from 'next/router'
 
 const validationSchema = z
   .object({
@@ -27,6 +30,9 @@ type ValidationSchema = z.infer<typeof validationSchema>
 export default function Home() {
   const [serverResponse, setServerResponse] = useState<ServerResponse>()
   const [error, setError] = useState('')
+  const [valid, setValid] = useState(false)
+
+  const { login, authUser } = useAuth()
 
   const {
     register,
@@ -53,18 +59,19 @@ export default function Home() {
       setError(serverResponse.error)
     } else {
       setError('')
-      //setAuth(serverResponse.data) from context
+      login(serverResponse.data)
     }
   }, [serverResponse])
 
-  useEffect(
-    () => {
-      //if auth redirect after time else return
-    },
-    [
-      /* auth from context */
-    ],
-  )
+  useEffect(() => {
+    if (!authUser) return
+
+    setValid(true)
+    setTimeout(() => {
+      Router.push('/')
+      setValid(false)
+    }, 2000)
+  }, [authUser])
 
   return (
     <>
@@ -91,6 +98,7 @@ export default function Home() {
                 aria-label="Email"
                 aria-invalid={errors.email ? true : undefined}
                 autoComplete="nickname"
+                disabled={valid}
                 required
                 {...register('email')}
               />
@@ -101,6 +109,7 @@ export default function Home() {
                 aria-label="Password"
                 aria-invalid={errors.password ? true : undefined}
                 autoComplete="current-password"
+                disabled={valid}
                 required
                 {...register('password')}
               />
@@ -110,6 +119,7 @@ export default function Home() {
                 placeholder="Confirm Password"
                 aria-invalid={errors.confirmPassword ? true : undefined}
                 aria-label="Confirm Password"
+                disabled={valid}
                 required
                 {...register('confirmPassword')}
               />
@@ -117,12 +127,18 @@ export default function Home() {
                 <small className="error">{errors.confirmPassword.message}</small>
               )}
               <fieldset>
-                <Link className="contrast" data-tooltip="Login" href="/login">
+                <Link
+                  className="contrast"
+                  aria-disabled={valid}
+                  data-tooltip="Login"
+                  role="link"
+                  href={clsx(!valid && '/login')}
+                >
                   Already registered ?
                 </Link>
               </fieldset>
 
-              <button type="submit" className="contrast">
+              <button type="submit" className={clsx(!valid && 'contrast')} aria-busy={valid}>
                 Register
               </button>
             </form>
