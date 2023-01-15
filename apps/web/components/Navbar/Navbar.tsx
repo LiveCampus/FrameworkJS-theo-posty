@@ -24,6 +24,9 @@ const Navbar = () => {
                 </summary>
                 <ul role="listbox">
                   <li>
+                    <Link href="/cart">Cart (TODO: 0)</Link>
+                  </li>
+                  <li>
                     <Link href="/account">Settings</Link>
                   </li>
                   <li>
