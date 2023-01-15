@@ -2,7 +2,7 @@ import axios from 'axios'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import ArticleCard from '../components/Navbar/ArticleCard'
+import ArticleCard from '../components/ArticleCard'
 import Navbar from '../components/Navbar/Navbar'
 
 export default function Home() {
