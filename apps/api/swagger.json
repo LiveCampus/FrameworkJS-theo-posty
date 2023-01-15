@@ -1200,6 +1200,72 @@
         }
       }
     },
+    "/auth/me": {
+      "get": {
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": ["AUTH"],
+        "summary": "Check and get current user",
+        "description": "Check and get current user",
+        "operationId": "me",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AuthUser"
+                    },
+                    "error": {
+                      "type": "string",
+                      "nullable": true,
+                      "default": null
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "format": "int8",
+                      "default": 201
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "nullable": true,
+                      "default": null
+                    },
+                    "error": {
+                      "type": "string",
+                      "default": "error message"
+                    },
+                    "statusCode": {
+                      "type": "integer",
+                      "format": "int8",
+                      "default": 400
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
 
     "/orders/{id}/add": {
       "put": {
