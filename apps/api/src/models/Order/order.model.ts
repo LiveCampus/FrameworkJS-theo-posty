@@ -3,7 +3,6 @@ import { IUser } from '@models/User/user.model'
 import mongoose from 'mongoose'
 
 export enum OrderStatus {
-  IDLE = 'idle',
   VALID = 'valid',
   PAID = 'paid',
   DELIVERED = 'delivered',
@@ -28,7 +27,7 @@ export const orderModel = new mongoose.Schema({
     type: String,
     enum: OrderStatus,
     required: true,
-    default: OrderStatus.IDLE,
+    default: OrderStatus.VALID,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
