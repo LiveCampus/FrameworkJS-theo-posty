@@ -1,9 +1,19 @@
+import axios from 'axios'
 import Head from 'next/head'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import Navbar from '../components/Navbar/Navbar'
-import { useAuth } from '../context/AuthContext'
 
 export default function Home() {
-  const { authUser } = useAuth()
+  const [products, setProducts] = useState<any[]>([])
+
+  useEffect(() => {
+    axios
+      .get(process.env.NEXT_PUBLIC_API_URL + '/products')
+      .then((res) => setProducts(res.data.data))
+      .catch((e) => console.error(e))
+  }, [])
 
   return (
     <>
@@ -14,7 +24,62 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
-      <main className="container"></main>
+      <main className="container">
+        <h1>Some of our articles</h1>
+        <Link href="/products">Want more ? Visit our products page !</Link>
+        <div className="grid">
+          {products.map((product) => (
+            <Link
+              href={`/products/${product.id}`}
+              className="contrast"
+              key={product.id}
+              style={{ textDecoration: 'none', width: 'max-content', height: 'max-content' }}
+            >
+              <article
+                style={{
+                  width: 300,
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                {product.image ? (
+                  <Image
+                    width={50}
+                    height={50}
+                    style={{ marginRight: 25 }}
+                    src={product.image}
+                    alt={product.name}
+                  />
+                ) : (
+                  <Image
+                    width={50}
+                    height={50}
+                    style={{ marginRight: 25 }}
+                    src={
+                      'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/681px-Placeholder_view_vector.svg.png'
+                    }
+                    alt={product.name}
+                  />
+                )}
+
+                <span
+                  style={{
+                    display: 'inline-block',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    minWidth: 0,
+                    marginRight: 25,
+                  }}
+                >
+                  {product.name}
+                </span>
+                <span>{product.price}$</span>
+              </article>
+            </Link>
+          ))}
+        </div>
+      </main>
     </>
   )
 }
