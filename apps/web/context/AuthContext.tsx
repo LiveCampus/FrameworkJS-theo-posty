@@ -1,3 +1,4 @@
+import axios from 'axios'
 import React, { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react'
 import { AuthUser } from '../types/types'
 
@@ -13,10 +14,33 @@ const AuthContextProvider = (props: PropsWithChildren) => {
   const [authUser, setAuthUser] = useState<AuthUser | null>(null)
 
   useEffect(() => {
-    const storage_item = localStorage.getItem('auth')
-    if (storage_item) {
-      setAuthUser(JSON.parse(storage_item))
-    }
+    ;(async () => {
+      const storage_item = localStorage.getItem('auth')
+
+      if (storage_item) {
+        const res = await axios
+          .get(process.env.NEXT_PUBLIC_API_URL + '/auth/me', {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(storage_item).token}`,
+            },
+          })
+          .catch(() => localStorage.removeItem('auth'))
+
+        if (!res) return
+
+        const { data: response } = res
+
+        const me = {
+          email: response.data.email,
+          role: response.data.role,
+          token: JSON.parse(storage_item).token,
+        }
+
+        localStorage.setItem('auth', JSON.stringify(me))
+
+        setAuthUser(me)
+      }
+    })()
   }, [])
 
   const login = (data: AuthUser) => {
