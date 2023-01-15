@@ -4,16 +4,13 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import Navbar from '../../components/Navbar/Navbar'
-import { BsCart, BsShop } from 'react-icons/bs'
+import { BsCart } from 'react-icons/bs'
 import { useCart } from '../../context/CartContext'
-import { useAuth } from '../../context/AuthContext'
-import Link from 'next/link'
 
 export default function Product() {
   const router = useRouter()
   const { cart, addToCart, removeFromCart } = useCart()
   const { id } = router.query
-  const { authUser } = useAuth()
 
   const [product, setProduct] = useState<any>()
 
@@ -49,45 +46,39 @@ export default function Product() {
                 <Image src={product.image} alt={product.name} width={500} height={500} />
               </figure>
             )}
-            {authUser ? (
-              <div>
-                <button
-                  style={{
-                    display: 'inline-block',
-                    width: 'fit-content',
-                    background: 'red',
-                    marginRight: 10,
-                  }}
-                  onClick={() => {
-                    removeFromCart(product.id)
-                  }}
-                >
-                  -
-                </button>
-                <span style={{ marginRight: 10 }}>
-                  <b>{cart.find((cart: any) => cart.id === product.id)?.qty || 0}</b> (
-                  <b>
-                    {(cart.find((cart: any) => cart.id === product.id)?.qty || 0) * product.price}
-                  </b>
-                  $)
-                </span>
-                <BsCart />
-                <button
-                  style={{
-                    display: 'inline-block',
-                    width: 'fit-content',
-                    marginLeft: 10,
-                  }}
-                  onClick={() => addToCart(product.id)}
-                >
-                  +
-                </button>
-              </div>
-            ) : (
-              <p>
-                Please <Link href="/login">login</Link> to order some of this product !
-              </p>
-            )}
+            <div>
+              <button
+                style={{
+                  display: 'inline-block',
+                  width: 'fit-content',
+                  background: 'red',
+                  marginRight: 10,
+                }}
+                onClick={() => {
+                  removeFromCart(product.id)
+                }}
+              >
+                -
+              </button>
+              <span style={{ marginRight: 10 }}>
+                <b>{cart.find((cart: any) => cart.id === product.id)?.qty || 0}</b> (
+                <b>
+                  {(cart.find((cart: any) => cart.id === product.id)?.qty || 0) * product.price}
+                </b>
+                $)
+              </span>
+              <BsCart />
+              <button
+                style={{
+                  display: 'inline-block',
+                  width: 'fit-content',
+                  marginLeft: 10,
+                }}
+                onClick={() => addToCart(product.id, product.price)}
+              >
+                +
+              </button>
+            </div>
           </>
         )}
       </main>

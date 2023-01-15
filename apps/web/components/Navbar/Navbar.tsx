@@ -1,8 +1,10 @@
 import Link from 'next/link'
 import { useAuth } from '../../context/AuthContext'
+import { useCart } from '../../context/CartContext'
 
 const Navbar = () => {
   const { authUser } = useAuth()
+  const { cart } = useCart()
 
   return (
     <nav className="container-fluid">
@@ -24,7 +26,9 @@ const Navbar = () => {
                 </summary>
                 <ul role="listbox">
                   <li>
-                    <Link href="/cart">Cart (TODO: 0)</Link>
+                    <Link href="/cart">
+                      Cart ({cart.reduce((prev: any, curr: any) => prev + curr.price, 0)}$)
+                    </Link>
                   </li>
                   <li>
                     <Link href="/account">Settings</Link>
@@ -41,6 +45,11 @@ const Navbar = () => {
                 Account
               </summary>
               <ul role="listbox">
+                <li>
+                  <Link href="/cart">
+                    Cart ({cart.reduce((prev: any, curr: any) => prev + curr.price, 0)}$)
+                  </Link>
+                </li>
                 <li>
                   <Link href="/register">Register</Link>
                 </li>
